@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from . import forms
 from . import models
 # Create your views here.
@@ -35,6 +35,8 @@ def inscription(request):
 
 
 def contact(request):
+
+    contacts = models.Contact.objects.filter(status=True).order_by('nom')
     return render(request, 'contact.html')
 
 
