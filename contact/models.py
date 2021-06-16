@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 
 class Base(models.Model):
 
-    date_creat = models.DateField( auto_now_add=True)
-    date_update = models.DateField(auto_now=True)
-    status  = models.BooleanField(default=True)
+    date_add = models.DateTimeField(auto_now_add=True)
+    date_update = models.DateTimeField(auto_now=True)
+    status = models.BooleanField(default=True)
 
     class Meta : 
         abstract = True
@@ -14,9 +14,9 @@ class Base(models.Model):
 
 class Profil(Base):
     user = models.OneToOneField(User, verbose_name=("Userdjango"), on_delete=models.CASCADE)
-    prenom = models.CharField( max_length=250)
-    photo = models.FileField( upload_to='Images')
-    phone = models.CharField( max_length=250)
+    prenom = models.CharField(max_length=250, null=True, blank=True)
+    photo = models.FileField(upload_to='Images', null=True, blank=True)
+    phone = models.CharField(max_length=250, null=True, blank=True)
 
 
     def __str__(self):
@@ -30,10 +30,10 @@ class Profil(Base):
 class Contact(Base):
 
     user = models.ForeignKey(User, verbose_name=("Profil"), on_delete=models.CASCADE)
-    photo = models.FileField( upload_to='Images')
+    photo = models.FileField(upload_to='Images', null=True, blank=True)
     nom = models.CharField( max_length=250)
-    prenom = models.CharField( max_length=250)
-    email = models.EmailField(max_length=254)
+    prenom = models.CharField( max_length=250, null=True, blank=True)
+    email = models.EmailField(max_length=254, null=True, blank=True)
     phone = models.CharField( max_length=250)
 
 
