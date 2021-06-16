@@ -3,11 +3,14 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User,UserManager
 from django.contrib.auth import authenticate,login,logout
+# from django.urls import reverse
 from . import forms
 from . import models
 # Create your views here.
 
 def index(request):
+    if request.user.is_authenticated:
+        return redirect('contact')
 
     if request.method == 'POST':
         username = request.POST.get('nom')
@@ -77,8 +80,9 @@ def logout_view(request):
 
 
 def contact(request):
-    contacts = models.Contact.objects.filter(status=True).order_by('nom')
-    return render(request, 'contact.html')
+    
+    contacts = models.Contact.objects.filter(status=True, user=request.user).order_by('nom')
+    return render(request, 'contact.html', locals())
 
 
 
@@ -104,18 +108,18 @@ def add(request):
 
 
 
-def get_my_contact(request):
-    datas = {
-        'contact': [
-            {
-                'id': ct.id,
-                'nom': ct.nom,
-                'telephone': ct.phone,
-                'url': reverse('contact', kwargs={'id': ct.id}),
-                'photo': ct.image.url if ct.image else ''
-            } for ct in request.user.user_profile.all()
+# def get_my_contact(request):
+#     datas = {
+#         'contact': [
+#             {
+#                 'id': ct.id,
+#                 'nom': ct.nom,
+#                 'telephone': ct.phone,
+#                 'url': reverse('detail', kwargs={'id': ct.id}),
+#                 'photo': ct.photo.url if ct.photo else ''
+#             } for ct in request.user.user_profile.all()
 
-        ]
-    }
+#         ]
+#     }
 
-    return JsonResponse(datas, safe=False)
+#     return JsonResponse(datas, safe=False)
