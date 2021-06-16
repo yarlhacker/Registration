@@ -7,17 +7,9 @@ from . import models
 class ProfilForm(ModelForm):
     class Meta:
         model = models.Profil
-        fields = '__all__'
-        exclude = ['user']
+        fields = ['prenom','photo', 'phone']
 
-class CreateProfilForm(ModelForm):
+class CreateProfilForm(UserCreationForm):
     class Meta:
         model = User
-        fields = '__all__'
-        exclude = ['username', 'email', 'password1', 'password2']
-
-class ContactForm(ModelForm):
-    class Meta:
-        model = models.Contact
-        fields = '__all__'
-        exclude = ['user']
+        fields = ['username', 'email', 'password1', 'password2']
