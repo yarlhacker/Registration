@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+
 from . import forms
 from . import models
 # Create your views here.
@@ -35,6 +37,7 @@ def inscription(request):
 
 
 def contact(request):
+    contacts = models.Contact.objects.filter(status=True).order_by('nom')
     return render(request, 'contact.html')
 
 
@@ -42,6 +45,7 @@ def contact(request):
 
 
 def detail(request):
+    
     return render(request, 'detail.html')
 
 
@@ -57,3 +61,21 @@ def edit(request):
 def add(request):
     return render(request, 'add.html')
 
+
+
+
+def get_my_contact(request):
+    datas = {
+        'contact': [
+            {
+                'id': ct.id,
+                'nom': ct.nom,
+                'telephone': ct.phone,
+                'url': reverse('contact', kwargs={'id': ct.id}),
+                'photo': ct.image.url if ct.image else ''
+            } for ct in request.user.user_profile.all()
+
+        ]
+    }
+
+    return JsonResponse(datas, safe=False)

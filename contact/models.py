@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User 
 
+# Create your models here.
 
 class Base(models.Model):
 
@@ -13,7 +14,7 @@ class Base(models.Model):
 
 
 class Profil(Base):
-    user = models.OneToOneField(User, verbose_name=("Userdjango"), on_delete=models.CASCADE)
+    user = models.OneToOneField(User, verbose_name=("Userdjango"), on_delete=models.CASCADE, related_name='user_profile', null=True, blank=True)
     prenom = models.CharField(max_length=250, null=True, blank=True)
     photo = models.FileField(upload_to='Images', null=True, blank=True)
     phone = models.CharField(max_length=250, null=True, blank=True)
@@ -45,4 +46,4 @@ class Contact(Base):
         verbose_name_plural = 'Contacts'
 
 
-# Create your models here.
+
