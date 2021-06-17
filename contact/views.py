@@ -3,8 +3,10 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User,UserManager
 from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 # from django.urls import reverse
-from . import forms
+
 from . import models
 # Create your views here.
 
@@ -31,7 +33,7 @@ def is_email(email):
     except :
         return False
 
-
+@login_required(login_url='index')
 def inscription(request):
     msg , success = '' , False
     if request.method == 'POST':
@@ -78,48 +80,82 @@ def logout_view(request):
 
    
 
-
+@login_required(login_url='index')
 def contact(request):
     
-    contacts = models.Contact.objects.filter(status=True, user=request.user).order_by('nom')
+    contacts = models.Contact.objects.filter(status=True, utilisateur=request.user).order_by('nom')
+    
     return render(request, 'contact.html', locals())
 
 
 
 
 
-def detail(request):
-    
-    return render(request, 'detail.html')
+@login_required(login_url='index')
+def detail(request,id):
+    contact = get_object_or_404(models.Contact , id =id)
+    return render(request, 'detail.html',locals())
 
 
 
 
+@login_required(login_url='index')
+def edit(request,id):
+    contact = get_object_or_404(models.Contact , id =id)
 
-def edit(request):
-    return render(request, 'edit.html')
+    if request.method == 'POST':
+        contact.photo = request.FILES.get('photo')
+        contact.nom = request.POST.get('nom')
+        contact.prenom = request.POST.get('prenom')
+        contact.email = request.POST.get('email')
+        contact.phone = request.POST.get('phone')
+        contact.save()
+        return redirect('detail', id=contact.id)
+       
+
+    return render(request, 'edit.html',locals())
 
 
 
-
+@login_required(login_url='index')
 def add(request):
-    return render(request, 'add.html')
+
+    if request.method == 'POST':
+        photo = request.FILES.get('photo')
+        nom = request.POST.get('nom')
+        prenom = request.POST.get('prenom')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        contact = models.Contact(photo=photo, nom=nom, prenom=prenom, email=email, phone=phone, utilisateur=request.user)
+        contact.save()
+        return redirect('index')
+        
+
+    return render(request, 'add.html',locals())
 
 
+def delete_contact(request,id):
+    
+    contact = get_object_or_404(models.Contact , id =id )
+    contact.delete()
 
+    return redirect('index')
+    
 
-# def get_my_contact(request):
-#     datas = {
-#         'contact': [
-#             {
-#                 'id': ct.id,
-#                 'nom': ct.nom,
-#                 'telephone': ct.phone,
-#                 'url': reverse('detail', kwargs={'id': ct.id}),
-#                 'photo': ct.photo.url if ct.photo else ''
-#             } for ct in request.user.user_profile.all()
+def get_my_contact(request):
 
-#         ]
-#     }
+    datas = {
+        'contact': [
+            {
+                'id': ct.id,
+                'nom': ct.nom,
+                'phone': ct.phone,
+                'url': reverse('detail', kwargs={'id': ct.id}),
+                'url2': reverse('delete_contact', kwargs={'id': ct.id}),
+                'photo': ct.photo.url if ct.photo else ''
+            } for ct in request.user.user_profile.all()
 
-#     return JsonResponse(datas, safe=False)
+        ]
+    }
+
+    return JsonResponse(datas, safe=False)

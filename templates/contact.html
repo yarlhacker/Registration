@@ -1,6 +1,5 @@
-<!DOCTYPE html>
 {% load static %}
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +7,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'assets/css/style.css'%}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -25,25 +26,19 @@
                     
                     <div class="mt-3 inputs"> <i class="fa fa-search"></i> <input type="text" class="form-control " placeholder="Search Tasks..."> </div>
 
-                    <div id="ap">   
-                            {% for contact in contacts %}
-                            <div class="mt-3"  >
+                    <div id="apps">   
+                           
+                            <div class="mt-3"  v-for="contact  in contacts" >
                                 <div class="d-flex justify-content-between align-items-center">
-                                            <a href="{% url 'detail'%}" style="text-decoration: none">
-                                            <div class="d-flex flex-row align-items-center"><span class="star"><span class="content-text-2">{{contact.nom |first}}{{contact.prenom |first}}</span></span>
-                                                <div class="d-flex flex-column"> <span style="color: black; font-weight:bold">{{contact.nom }}</span>
-                                                    <div class="d-flex flex-row align-items-center time-text"> <small>{{contact.phone}}</small> </div>
-                                                </div>
-                                            </div></a> <span class="content-text-1"><i class="far fa-trash-alt"></i></span>
+                                            <a :href="contact.url" style="text-decoration: none">
+                                    <div class="d-flex flex-row align-items-center"><span class="star"><span class="content-text-2">M</span></span>
+                                        <div class="d-flex flex-column"> <span style="color: black; font-weight:bold">%{contact.nom}</span>
+                                            <div class="d-flex flex-row align-items-center time-text"> <small>%{contact.phone}</small> </div>
                                         </div>
-                                    </div>
+                                     </div></a> <a :href="contact.url2"><span class="content-text-1"><i class="far fa-trash-alt"></i></span></a>
+                                </div>
+                            </div>
                                 
-                                
-                            {%empty%}
-                             
-                             <h1>No contact</h1>
-
-                            {% endfor %}
  
                     </div>
                    
@@ -55,5 +50,44 @@
     </div>
 </body>
 </html>
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+    const app = new Vue({
+
+            el : '#apps',
+            data : {
+
+                contacts : [],
+        
+                
+            },
+            delimiters : ['%{','}'],
+            mounted(){
+                this.getcontactlist()
+                console.log(this.contacts)
+            },
+            methods : {
+
+                remove(id){
+                    this.contacts=this.contacts.filter((e) => e.id !=id)
+                },
+                setData(data){
+                    this.contacts = data
+
+                },
+                getcontactlist(){
+                    _setData = this.setData
+                    axios.get("{% url 'getmycontact' %}").then(function(response){
+                        let dt = response.data
+                        _setData(dt.contact)
+                    })
+                    .catch(function(error){
+                        console.log(error);
+                    });
+                }
+
+            }
+
+    })
+</script>

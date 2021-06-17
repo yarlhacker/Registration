@@ -9,9 +9,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'assets/css/style.css'%}">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <div class="registration-form">
+    <div class="registration-form" id="apps">
         <form method="POST" action="#" enctype="multipart/form-data">
             {% csrf_token %}
             <div  class="image-upload form-icon">
@@ -57,3 +59,23 @@
     <script src="{% static 'assets/js/script.js'%}"></script>
 </body>
 </html>
+<!-- <script>
+
+    const app = new Vue({
+
+            el : '#apps',
+            data : {
+
+                
+        
+                
+            },
+            delimiters : ['%{','}'],
+            methods : {
+
+               
+
+            }
+
+    })
+</script> -->

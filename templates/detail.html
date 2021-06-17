@@ -13,21 +13,29 @@
 <body>
     <div class="container height-100 d-flex justify-content-center align-items-center">
         <div class="card text-center">
+            <a href="{% url 'contact' %}" class="btn btn-outline-secondary">back</a>
             <div class="py-4 p-1 photo">
-                <div> <img src="{% static 'assets/img/hero.jpg'%}" class="rounded" width="200"> </div>
+                {% if contact.photo %}
+                <div> <img src="{{contact.photo.url}}" class="rounded" width="200"> </div>
+
+                {% else %}
+                <div> <img src="{% static 'assets/img/add-photo.png'%}" class="rounded" width="200"> </div>
+
+                {% endif %}
+
                 <div class="mt-3 d-flex flex-row justify-content-center">
-                    <h5 style="font-size:30px;">Bakayoko <br> Ismael</h5> <span class="dots"><i class="fa fa-check"></i></span>
+                    <h5 style="font-size:30px;">{{contact.nom}}<br> {{contact.prenom}}</h5> <span class="dots"><i class="fa fa-check"></i></span>
                 </div>
-                <div class="mt-3"> <button class="btn btn-danger"><i class="far fa-trash-alt"></i> Del</button> <button class="btn btn-outline-secondary"><i class="fas fa-edit"></i> Edit</button> </div>
+                <div class="mt-3"> <a class="btn btn-danger" href="{% url 'delete_contact' contact.id %}"><i class="far fa-trash-alt"></i> Del</a> <a class="btn btn-outline-secondary"  href="{% url 'edit' contact.id %}"><i class="fas fa-edit"></i> Edit</a> </div>
                 
             </div>
             <div>
                 <ul class="list-unstyled list">
                     <li> <span class="font-weight-bold">Email</span>
-                        <div> <span class="mr-1">ismael@gmail.com</span> </div>
+                        <div> <span class="mr-1">{{contact.email}}</span> </div>
                     </li>
                     <li> <span class="font-weight-bold">Numero</span>
-                        <div> <span class="mr-1">45 068263628</span></div>
+                        <div> <span class="mr-1">{{contact.phone}}</span></div>
                     </li>
                     <li> <span class="font-weight-bold">Autre</span>
                         <div> <span class="mr-1">AUTRE</span> </div>
