@@ -94,6 +94,7 @@ def contact(request):
 
 @login_required(login_url='index')
 def detail(request,id):
+    contacts = models.Contact.objects.filter(status=True, utilisateur=request.user)
     contact = get_object_or_404(models.Contact , id =id)
     return render(request, 'detail.html',locals())
 
@@ -112,7 +113,7 @@ def edit(request,id):
         contact.phone = request.POST.get('phone')
         contact.save()
         return redirect('detail', id=contact.id)
-       
+    
 
     return render(request, 'edit.html',locals())
 
