@@ -39,7 +39,7 @@ def is_email(email):
     except:
         return False
 
-def inscription(request):
+def checkup(request):
     msg , success = '' , False
     if request.method == 'POST':
         photo = request.FILES.get('photo')
@@ -72,8 +72,14 @@ def inscription(request):
             profil.save()
 
             return redirect("index")
+    datas= {
+        'success': success,
+        'msg': msg,
+    }
+    return JsonResponse(datas, safe=False)
 
-    return render(request, 'inscription.html', locals())
+def inscription(request):
+    return render(request,'inscription.html')
 
 def logout_view(request):
     

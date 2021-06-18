@@ -23,25 +23,25 @@
                 <input type="file" name="photo" id="photo" onchange="readURL(this);">
             </div>
             <div class="form-group">
-                <input type="text" name="nom" class="form-control item" id="username" placeholder="Nom">
+                <input type="text" v-model="nom"  name="nom" class="form-control item" id="username" placeholder="Nom">
             </div>
             <div class="form-group">
-                <input type="text" name="prenom" class="form-control item" id="password" placeholder="Prenom">
+                <input type="text" v-model="prenom"  name="prenom" class="form-control item" placeholder="Prenom">
             </div>
             <div class="form-group">
-                <input type="text" name="email" class="form-control item" id="email" placeholder="Email">
+                <input type="text" v-model="email"  name="email" class="form-control item" id="email" placeholder="Email">
             </div>
             <div class="form-group">
-                <input type="text" name="phone" class="form-control item" id="phone-number" placeholder="Phone Number">
+                <input type="text" v-model="phone"  name="phone" class="form-control item" id="phone-number" placeholder="Phone Number">
             </div>
             <div class="form-group">
-                <input type="password" name="password1" class="form-control item" id="password" placeholder="password">
+                <input type="password" v-model="password1"  name="password1" class="form-control item" placeholder="password">
             </div>
             <div class="form-group">
-                <input type="password" name="password2" class="form-control item" id="password" placeholder="Confirm password">
+                <input type="password" v-model="password2"  name="password2" class="form-control item" placeholder="Confirm password">
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-block create-account">Create Account</button>
+                <button type="submit" @click.prevent="postData" class="btn btn-block create-account">Create Account</button>
             </div>
         </form>
 
@@ -54,27 +54,98 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
     <script src="{% static 'assets/js/script.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 </html>
-<!-- <script>
+<script>
 
     const app = new Vue({
 
             el : '#apps',
-            data : {
-
-                
-        
-                
-            },
+            data : { 
+                nom:'',
+                prenom:'',
+                email:'',
+                phone:'',
+                password1:'',
+                password2:'',
+                url:" {% url 'checkup'%}"
+             },
             delimiters : ['%{','}'],
             methods : {
+                postData(){
+                    if(!this.nom || !this.prenom || !this.email || !this.phone || !this.password1 || !this.password2){
+                        swal.fire({
+                            icon:'error',
+                            text:'Veuillez remplir les champs vides',
+                            showConfirmButton:false,
+                            timer:2000
+                        })
+                    }
+                    else if (!/[A-Za-z'éèöïäëû ]+/.test(this.name)){
+                        swal.fire({
+                          icon:'error',
+                          text:'Veuillez saisir un nom valide',
+                          showConfirmButton:false,
+                          timer:2000
+                        })
+                    }
+                    else if (!/(\w\.?)+@(\w\.?)+\.[A-Za-z]{2,3}/.test(this.email)){
+                        swal.fire({
+                          icon:'error',
+                          text:'Veuillez saisir un email valide',
+                          showConfirmButton:false,
+                          timer:2000
+                        })
+                    }
+                    else{
+                        if(this.password1 == this.password2){
+                            axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+                            axios.defaults.xsrfCookieName = 'csrftoken'
 
+                            let form = new FormData()
 
+                            form.append('nom', this.nom)
+                            form.append('prenom', this.prenom)
+                            form.append('email', this.email)
+                            form.append('phone', this.phone)
+                            form.append('password', this.password)
+
+                            axios.post(this.url, form).then((response) => {
+                                if(reponse.data.success){
+                                    swal.fire({
+                                        icon:'success',
+                                        text:response.data.msg,
+                                        showConfirmButton:false,
+                                        timer:2000,
+                                    })
+                                }
+                                else {
+                                    swal.fire({
+                                      icon:'error',
+                                      text:response.data.msg,
+                                      showConfirmButton:false,
+                                      timer:2000,
+                                    })
+                                }
+                            })                   
+                        }
+                        else{
+                            swal.fire({
+                                icon:'error',
+                                text:"les mots de passe doivent etre identique",
+                                showConfirmButton:false,
+                                timer:2000,
+                            })
+                        }
+                    }
+                }
+                    
             }
 
     })
-</script> -->
+</script>
