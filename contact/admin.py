@@ -5,9 +5,8 @@ from . import models
 @admin.register(models.Profil)
 class ProdilAdmin(admin.ModelAdmin):
 
-    list_display = ["user","prenom","photo","phone", "date_creat","date_update","status"]
+    list_display = ["user","prenom","phone", "date_creat","date_update","status"]
     list_editable = ('status',)
-
 
 
 @admin.register(models.Contact)
