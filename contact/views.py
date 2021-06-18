@@ -6,6 +6,7 @@ from django.contrib.auth.models import User,UserManager
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 # from django.urls import reverse
 
 from . import models
@@ -33,7 +34,7 @@ def is_email(email):
         return True
     except:
         return False
-
+@csrf_exempt
 def inscription(request):
     msg , success = '' , False
     if request.method == 'POST':
@@ -61,7 +62,7 @@ def inscription(request):
             msg = 'veuillez rentrez un email valide'
         else:
             success = True
-
+            msg = 'Felicitation'
             user = User.objects.create_user(username=nom,password=pwd,email=email)
             user.save()
             profil = models.Profil(photo=photo,prenom=prenom,phone=phone)
