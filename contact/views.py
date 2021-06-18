@@ -6,9 +6,14 @@ from django.contrib.auth.models import User,UserManager
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+<<<<<<< HEAD
 from django.db.models import Q
 from .filter import search
+=======
+from django.views.decorators.csrf import csrf_exempt
+>>>>>>> 5e925b6d1556cd0c54bde489c7c734b01d16a8e5
 # from django.urls import reverse
+import json
 
 from . import models
 # Create your views here.
@@ -20,12 +25,8 @@ def index(request):
     if request.method == 'POST':
         username = request.POST.get('nom')
         password = request.POST.get('password1')
-        user = models.Profil.objects.filter(Q(user__email=username) | Q(phone=username)).first()
-        print('@@@@@', user , username, password)
-        if user:
-            user = authenticate(request, username=user.user.username, password=password)
-    
-        if user:
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
             login(request, user)
             return redirect('contact')
         else:
@@ -40,7 +41,7 @@ def is_email(email):
     except:
         return False
 
-def inscription(request):
+def checkup(request):
     msg , success = '' , False
     if request.method == 'POST':
         photo = request.FILES.get('photo')
@@ -68,13 +69,21 @@ def inscription(request):
         else:
             success = True
 
-            user = User.objects.create_user(username=email,password=pwd,email=email)
-            profil = models.Profil(photo=photo,prenom=prenom,phone=phone , user=user)
+            user = User.objects.create_user(username=nom,password=pwd,email=email)
+            user.save()
+            profil = models.Profil(photo=photo,prenom=prenom,phone=phone)
+            profil.user = user
             profil.save()
 
             return redirect("index")
+    datas= {
+        'success': success,
+        'msg': msg,
+    }
+    return JsonResponse(datas, safe=False)
 
-    return render(request, 'inscription.html', locals())
+def inscription(request):
+    return render(request,'inscription.html')
 
 def logout_view(request):
     
@@ -85,12 +94,12 @@ def logout_view(request):
 
 @login_required(login_url='index')
 def contact(request):
-    
+    find = True
     contacts = models.Contact.objects.filter(status=True, utilisateur=request.user).order_by('nom')
     search_contact = request.GET.get('search_name')
     if search_contact:
         contacts = models.Contact.objects.filter(nom__icontains=search_contact)
-
+        find = False
     return render(request, 'contact.html', locals())
 
 
@@ -112,9 +121,7 @@ def edit(request,id):
     contact = get_object_or_404(models.Contact , id =id)
 
     if request.method == 'POST':
-        photo= request.FILES.get('photo')
-        if photo:
-            contact.photo = photo
+        contact.photo = request.FILES.get('photo')
         contact.nom = request.POST.get('nom')
         contact.prenom = request.POST.get('prenom')
         contact.email = request.POST.get('email')
@@ -132,7 +139,6 @@ def add(request):
 
     if request.method == 'POST':
         photo = request.FILES.get('photo')
-        print(photo)
         nom = request.POST.get('nom')
         prenom = request.POST.get('prenom')
         email = request.POST.get('email')
@@ -168,7 +174,10 @@ def get_my_contact(request):
 
         ]
     }
+    return JsonResponse(datas, safe=False)
 
+
+<<<<<<< HEAD
     return JsonResponse(datas, safe=False)
 
 
@@ -179,3 +188,37 @@ def search_contact(request):
         search_contact = request.GET.get('search_name')
         contacts = models.Contact.objects.filter(nom=search_contact)
     return render(request , "contact.html",locals())
+=======
+def copy_contact(id_contact, users):
+    contact = models.Contact.objects.get(id=id_contact)
+    for us in users:
+        contact.id = None
+        contact.utilisateur = us.user
+        contact.save()
+
+
+@csrf_exempt
+def send_contact(request):
+    success, message = False, "Echec d'envoie"
+    _emails = request.POST.get('tel_list')
+    contact = request.POST.get('id')
+    emails = json.loads(_emails)
+
+    users = []
+    for u in emails:
+        user = models.Profil.objects.filter(user__email=u).first()
+        if user:
+            users.append(user)
+    copy_contact(contact, users)
+
+    if len(users) < 1:
+        message = 'Aucun utilisateur trouve'
+    else:
+        message, success = 'Envoie effectue', True
+
+    datas = {
+        "success": success,
+        "message": message
+    }
+    return JsonResponse(datas, safe=False)
+>>>>>>> 5e925b6d1556cd0c54bde489c7c734b01d16a8e5

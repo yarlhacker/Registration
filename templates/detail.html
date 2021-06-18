@@ -17,15 +17,14 @@
         <div class="card text-center">
             <a href="{% url 'contact' %}" class="btn btn-outline-secondary">back</a>
             
-            <div style="display: flex;">
+            <div style="display: flex;" id="app">
                 <select id="select" multiple style="width:200px;">
                     {% for cont in contacts %}
-                        <option> {{cont.nom}} </option>
+                        <option value='{{cont.email}}'> {{ cont.nom }} </option>
                     {% endfor %}
-                    </select>
-                    <input type="text" id="saisir"/>
-                    <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-share-alt"></i></button>
                 </select>
+                <input type="text" id="saisir"/>
+                <button type="submit" @click.prevent="postData" class="btn btn-outline-secondary"><i class="fas fa-share-alt"></i></button>
             </div>
         
             <div class="py-4 p-1 photo">
@@ -58,21 +57,67 @@
             </div>
         </div>
     </div>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    
-    <script>
-        $(document).ready(function()
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    $(document).ready(function()
         {
-            $("#select").select2({ 
-                placeholder : 'partarger',
-                closeOnselect : false
-            });
-            $("#select").on('change', function()
-            {
-                var namedisplay = $("#select option:selected").text();
-                $("$saisir").val(namedisplay);
-            });
+        $("#select").select2({ 
+            placeholder : 'partarger',
+            closeOnselect : false
         });
-    </script>
+        $("#select").on('change', function()
+        {
+            var namedisplay = $("#select option:selected").text();
+            $("#saisir").val(namedisplay);
+        });
+        });
+</script>
+<script>
+    new Vue({
+            el:'#app',
+            data:{
+            },
+            methods:{
+                postData(){
+                    var selected = $('#select').val();
+                    console.log(selected)
+
+                    let formData = new FormData();
+                    formData.append('tel_list', JSON.stringify(selected));
+                    formData.append('id', '{{contact.id}}');
+                    axios.post("{% url 'send_contact' %}", formData, {})
+                    .then(function(response){
+                        if (response.data.success){
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: response.data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }else{
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'warning',
+                                title: response.data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+
+                    })
+                    .catch(function(error){
+                        console.log(error);
+                    });
+                },
+            }
+        })
+</script>
+
 </body>
 </html>
