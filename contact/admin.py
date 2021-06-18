@@ -10,7 +10,9 @@ class ProfilAdmin(admin.ModelAdmin):
     list_editable = ('status',)
 
     def images_view(self, obj):
-        return mark_safe(f'<img src="{obj.photo.url}" style="height:100px; width:200px">')
+        if obj.photo:
+            return mark_safe(f'<img src="{obj.photo.url}" style="height:100px; width:200px">')
+        return '-'
 
     images_view.short_description = 'Aperçu des images'
 
@@ -21,8 +23,9 @@ class ContactAdmin(admin.ModelAdmin):
     list_editable = ('status',)
 
     def images_view(self, obj):
-        return mark_safe(f'<img src="{obj.photo.url}" style="height:100px; width:200px">')
-
+        if obj.photo:
+            return mark_safe(f'<img src="{obj.photo.url}" style="height:100px; width:200px">')
+        return '_'
     images_view.short_description = 'Aperçu des images'
     
 

@@ -17,10 +17,20 @@
             {%csrf_token%}
         <a href="{% url 'detail' contact.id%}" class="btn btn-outline-secondary"><i class="fas fa-chevron-left"></i>  back</a>
             <div  class="image-upload form-icon">
-                <label for="photo">
-                    <img src="{{photo.url}}" id="blah" >
-                </label>
-                <input type="file" id="photo" onchange="readURL(this);"  name="photo">
+                
+                {% if contact.photo %}
+                    
+                    <label for="photo">
+                        <img src="{{contact.photo.url}}" id="blah" >
+                    </label>
+                    <input type="file" id="photo" onchange="readURL(this);"  name="photo">
+                {% else %}
+                    <label for="photo">
+                        <img src="{% static 'assets/img/add-photo.png'%}" id="blah" >
+                    </label>
+                    <input type="file" id="photo" onchange="readURL(this);"  name="photo">
+                {% endif %}
+                    
             </div>
             <div class="form-group">
                 <input type="text" class="form-control item" id="username" placeholder="Nom" value="{{contact.nom}}" name="nom">

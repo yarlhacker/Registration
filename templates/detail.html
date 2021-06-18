@@ -8,12 +8,26 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'assets/css/style.css'%}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
-    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />    <title>Document</title>
 </head>
 <body>
     <div class="container height-100 d-flex justify-content-center align-items-center">
+        
+        
         <div class="card text-center">
             <a href="{% url 'contact' %}" class="btn btn-outline-secondary">back</a>
+            
+            <div style="display: flex;">
+                <select id="select" multiple style="width:200px;">
+                    {% for cont in contacts %}
+                        <option> {{cont.nom}} </option>
+                    {% endfor %}
+                    </select>
+                    <input type="text" id="saisir"/>
+                    <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-share-alt"></i></button>
+                </select>
+            </div>
+        
             <div class="py-4 p-1 photo">
                 {% if contact.photo %}
                 <div> <img src="{{contact.photo.url}}" class="rounded" width="200"> </div>
@@ -44,5 +58,21 @@
             </div>
         </div>
     </div>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    
+    <script>
+        $(document).ready(function()
+        {
+            $("#select").select2({ 
+                placeholder : 'partarger',
+                closeOnselect : false
+            });
+            $("#select").on('change', function()
+            {
+                var namedisplay = $("#select option:selected").text();
+                $("$saisir").val(namedisplay);
+            });
+        });
+    </script>
 </body>
 </html>
