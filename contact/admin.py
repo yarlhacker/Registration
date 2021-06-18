@@ -18,7 +18,7 @@ class ProfilAdmin(admin.ModelAdmin):
 @admin.register(models.Contact)
 class ContactAdmin(admin.ModelAdmin):
 
-    list_display = ["user","prenom","images_view","phone","nom","email","status"]
+    list_display = ["utilisateur","prenom","images_view","phone","nom","email", "date_add","date_update","status"]
     list_editable = ('status',)
 
     def images_view(self, obj):

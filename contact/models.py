@@ -30,13 +30,13 @@ class Profil(Base):
 
 
 class Contact(Base):
-
-    user = models.ForeignKey(User, verbose_name=("Profil"), on_delete=models.CASCADE, related_name='user_profile')
+    
+    utilisateur = models.ForeignKey(User, verbose_name=("Profil"), on_delete=models.CASCADE, related_name='user_profile' , null=True, blank=True)
     photo = models.FileField(upload_to='Images', null=True, blank=True)
-    nom = models.CharField( max_length=250)
+    nom = models.CharField( max_length=250 ,null=True, blank=True)
     prenom = models.CharField( max_length=250, null=True, blank=True)
     email = models.EmailField(max_length=254, null=True, blank=True)
-    phone = models.CharField( max_length=250)
+    phone = models.CharField( max_length=250 ,null=True, blank=True)
 
 
     def __str__(self):
