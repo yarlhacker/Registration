@@ -13,28 +13,29 @@
 </head>
 <body>
     <div class="registration-form">
-        <form>
+        <form method="POST" action="#" enctype="multipart/form-data"> 
+            {% csrf_token %}
         <a  href='{% url 'contact' %}' type="button" class="btn btn-outline-secondary"><i class="fas fa-chevron-left"></i>  back</a>
             <div  class="image-upload form-icon">
                 <label for="photo">
-                    <img src="{% static 'assets/img/img-02.jpg' %}" id="blah">
+                    <img src="{% static 'assets/img/add-photo.png'%}" id="blah">
                 </label>
-                <input type="file" id="photo" onchange="readURL(this);">
+                <input type="file" id="photo" onchange="readURL(this);" name="photo">
             </div>
             <div class="form-group">
-                <input type="text" class="form-control item" id="username" placeholder="Nom">
+                <input type="text" class="form-control item" id="username" placeholder="Nom" name="nom">
             </div>
             <div class="form-group">
-                <input type="text" class="form-control item" id="password" placeholder="Prenom">
+                <input type="text" class="form-control item" id="password" placeholder="Prenom" name="prenom">
             </div>
             <div class="form-group">
-                <input type="text" class="form-control item" id="email" placeholder="Email">
+                <input type="text" class="form-control item" id="email" placeholder="Email" name="email">
             </div>
             <div class="form-group">
-                <input type="text" class="form-control item" id="phone-number" placeholder="Phone Number">
+                <input type="text" class="form-control item" id="phone-number" placeholder="Phone Number" name="phone">
             </div>
             <div class="form-group" id="group-button">
-                <button type="button" class="btn btn-outline-secondary create-account" >Add contact</button>
+                <button type="submit" class="btn btn-outline-secondary create-account" >Add contact</button>
                 <button type="button" class="btn btn-outline-secondary create-account " id="button2"> Brouillons</button>
             </div>
         </form>
