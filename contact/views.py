@@ -9,6 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from django.db.models import Q
 from django.contrib import messages
+from .filter import search
+
 
 # from django.urls import reverse
 import json
@@ -174,6 +176,14 @@ def get_my_contact(request):
     return JsonResponse(datas, safe=False)
 
 
+def search_contact(request):
+    contacts = models.Contact.objects.filter(status=True, utilisateur=request.user).order_by('nom')
+    if request.method == "GET":
+        search_contact = request.GET.get('search_name')
+        contacts = models.Contact.objects.filter(nom=search_contact)
+    return render(request , "contact.html",locals())
+
+
 def copy_contact(id_contact, users):
     contact = models.Contact.objects.get(id=id_contact)
     for us in users:
@@ -206,4 +216,5 @@ def send_contact(request):
         "message": message
     }
     return JsonResponse(datas, safe=False)
+
 
