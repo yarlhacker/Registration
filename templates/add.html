@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="{% static 'assets/css/style.css'%}">
 </head>
 <body>
-    <div class="registration-form">
-        <form method="post" action="#"> {% csrf_token %}
+    <div class="registration-form" >
+        <form method="post" action="#" enctype="multipart/form-data"> {% csrf_token %}
         <a  href='{% url 'contact' %}' type="button" class="btn btn-outline-secondary"><i class="fas fa-chevron-left"></i>  back</a>
             <div  class="image-upload form-icon">
                 <label for="photo">

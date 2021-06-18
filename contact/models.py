@@ -15,7 +15,7 @@ class Base(models.Model):
 
 
 class Profil(Base):
-    user = models.OneToOneField(User, verbose_name=("Userdjango"), on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(User, verbose_name=("Userdjango"), on_delete=models.CASCADE, related_name='profil', null=True, blank=True )
     prenom = models.CharField(max_length=250, null=True, blank=True)
     photo = models.FileField(upload_to='Images', null=True, blank=True)
     phone = models.CharField(max_length=250, null=True, blank=True)

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User,UserManager
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.db.models import Q
 # from django.urls import reverse
 
 from . import models
@@ -18,8 +19,12 @@ def index(request):
     if request.method == 'POST':
         username = request.POST.get('nom')
         password = request.POST.get('password1')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+        user = models.Profil.objects.filter(Q(user__email=username) | Q(phone=username)).first()
+        print('@@@@@', user , username, password)
+        if user:
+            user = authenticate(request, username=user.user.username, password=password)
+    
+        if user:
             login(request, user)
             return redirect('contact')
         else:
@@ -62,10 +67,8 @@ def inscription(request):
         else:
             success = True
 
-            user = User.objects.create_user(username=nom,password=pwd,email=email)
-            user.save()
-            profil = models.Profil(photo=photo,prenom=prenom,phone=phone)
-            profil.user = user
+            user = User.objects.create_user(username=email,password=pwd,email=email)
+            profil = models.Profil(photo=photo,prenom=prenom,phone=phone , user=user)
             profil.save()
 
             return redirect("index")
@@ -94,7 +97,8 @@ def contact(request):
 
 @login_required(login_url='index')
 def detail(request, id):
-    contact = models.Contact.objects.get(id=id) 
+    contact = models.Contact.objects.get(id=id)
+    contacts = models.Contact.objects.filter(utilisateur=request.user)
     if request.method == 'POST':
         contact.delete()
         return redirect('contact')
@@ -107,7 +111,9 @@ def edit(request,id):
     contact = get_object_or_404(models.Contact , id =id)
 
     if request.method == 'POST':
-        contact.photo = request.FILES.get('photo')
+        photo= request.FILES.get('photo')
+        if photo:
+            contact.photo = photo
         contact.nom = request.POST.get('nom')
         contact.prenom = request.POST.get('prenom')
         contact.email = request.POST.get('email')
@@ -125,6 +131,7 @@ def add(request):
 
     if request.method == 'POST':
         photo = request.FILES.get('photo')
+        print(photo)
         nom = request.POST.get('nom')
         prenom = request.POST.get('prenom')
         email = request.POST.get('email')
