@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.db.models import Q
+from .filter import search
 # from django.urls import reverse
 
 from . import models
@@ -169,3 +170,12 @@ def get_my_contact(request):
     }
 
     return JsonResponse(datas, safe=False)
+
+
+
+def search_contact(request):
+    contacts = models.Contact.objects.filter(status=True, utilisateur=request.user).order_by('nom')
+    if request.method == "GET":
+        search_contact = request.GET.get('search_name')
+        contacts = models.Contact.objects.filter(nom=search_contact)
+    return render(request , "contact.html",locals())
