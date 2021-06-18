@@ -16,40 +16,29 @@
         <div class="row d-flex justify-content-center mt-5 ">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="d-flex justify-content-between align-items-center"> <span class="font-weight-bold">Weekly Tasks</span>
-                        <div class="d-flex flex-row"><a href="{% url 'add'%}" class="btn btn-primary mr-2 active"><i class="fa fa-plus"></i> Add</a><a href="{% url 'add'%}" class="btn btn-primary new">Logout</a> </div>
+                    <div class="d-flex justify-content-between align-items-center"> <span class="font-weight-bold">{{ user.username}}</span>
+                        <div class="d-flex flex-row"><a href="{% url 'add'%}" class="btn btn-primary mr-2 active"><i class="fa fa-plus"></i> Add</a><a href="{% url 'index'%}" class="btn btn-primary new">Logout</a> </div>
                     </div>
-                    <div class="mt-3 inputs"> <i class="fa fa-search"></i> <input type="text" class="form-control " placeholder="Search Tasks..."> </div>
-                    <div class="mt-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex flex-row align-items-center"><span class="star"><span class="content-text-2">05</span></span>
-                                <div class="d-flex flex-column"> <span>Marketing</span>
-                                    <div class="d-flex flex-row align-items-center time-text"> <small>Numero</small> </div>
-                                </div>
-                            </div> <span class="content-text-1"><i class="far fa-trash-alt"></i></span>
-                        </div>
-                    </div>
+                    <form action="" method="get">
+                        <div class="mt-3 inputs"> <i class="fa fa-search"></i> <input type="text" class="form-control " name="search_name" placeholder="Search Tasks..."> </div>
+                        
+                    </form> 
                     {% for contact in contacts %}
                     <div class="mt-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex flex-row align-items-center"><span class="star"><span class="content-text-2">05</span></span>
-                                <div class="d-flex flex-column"> <span>{{ contact.nom }}</span>
-                                    <div class="d-flex flex-row align-items-center time-text"> <small>{{ contact.phone }}</small> </div>
-                                </div>
-                            </div> <span class="content-text-1"><i class="far fa-trash-alt"></i></span>
+                                <a href="{% url 'detail' contact.id %}" style="text-decoration: none; color:rgb(8, 8, 8); font-weight:bold">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex flex-row align-items-center"><span class="star"><span class="content-text-2">{{ contact.nom |first }}{{ contact.prenom |first}}</span></span>
+                                        <div class="d-flex flex-column"> <span>{{ contact.nom }}</span>
+                                            <div class="d-flex flex-row align-items-center time-text"> <small>{{ contact.phone }}</small> </div>
+                                        </div>
+                                    
+                                </div> <span class="content-text-1"><i class="fas fa-info-circle"></i></i></span>
+                            </div> 
+                            </a>
                         </div>
-                    </div>
                     {% endfor %}
-                   
-                    <div class="mt-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex flex-row align-items-center"><span class="star"><span class="content-text-2">05</span></span>
-                                <div class="d-flex flex-column"> <span>Marketing</span>
-                                    <div class="d-flex flex-row align-items-center time-text"> <small>Numero</small> </div>
-                                </div>
-                            </div> <span class="content-text-1"><i class="far fa-trash-alt"></i></span>
-                        </div>
-                    </div>
+                
+                    
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User,UserManager
 from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.decorators import login_required
 # from django.urls import reverse
 from . import forms
 from . import models
@@ -29,10 +30,10 @@ def is_email(email):
     try:
         validate_email(email)
         return True
-    except :
+    except:
         return False
 
-
+@login_required(login_url='index')
 def inscription(request):
     msg , success = '' , False
     if request.method == 'POST':
@@ -79,32 +80,60 @@ def logout_view(request):
 
    
 
-
+@login_required(login_url='index')
 def contact(request):
-    
+    find = True
     contacts = models.Contact.objects.filter(status=True, user=request.user).order_by('nom')
+    search_contact = request.GET.get('search_name')
+    if search_contact:
+        contacts = models.Contact.objects.filter(nom__icontains=search_contact)
+        find = False
     return render(request, 'contact.html', locals())
 
 
 
 
-
-def detail(request):
-    
-    return render(request, 'detail.html')
-
-
-
-
-
-def edit(request):
-    return render(request, 'edit.html')
+@login_required(login_url='index')
+def detail(request, id):
+    contact = models.Contact.objects.get(id=id) 
+    if request.method == 'POST':
+        contact.delete()
+        return redirect('contact')
+    return render(request, 'detail.html',locals())
 
 
 
 
+@login_required(login_url='index')
+def edit(request, id):
+    contact = models.Contact.objects.get(id=id) 
+
+    if request.method == 'POST':   
+        contact.nom = request.POST.get['nom']
+        contact.prenom = request.POST.get['prenom']
+        contact.email = request.POST.get['email']
+        contact.phone = request.POST.get['phone']
+        contact.photo = request.FILES.get['photo']
+        contact.user = request.user
+        contact.save()
+        return redirect('detail', id = contact.id )
+    return render(request, 'edit.html', locals())
+
+
+
+@login_required(login_url='index')
 def add(request):
-    return render(request, 'add.html')
+    if request.method == 'POST':
+        new_contact = models.Contact()
+        new_contact.nom = request.POST.get['nom']
+        new_contact.prenom = request.POST.get['prenom']
+        new_contact.email = request.POST.get['email']
+        new_contact.phone = request.POST.get['phone']
+        new_contact.photo = request.FILES.get['photo']
+        new_contact.user = request.user
+        new_contact.save()
+        return redirect('contact')
+    return render(request, 'add.html', locals())
 
 
 

@@ -13,21 +13,24 @@
 <body>
     <div class="container height-100 d-flex justify-content-center align-items-center">
         <div class="card text-center">
+        <a href="{% url 'contact' %}" class="btn btn-outline-secondary" style="width:13%;"><i class="fas fa-chevron-left"></i>  back</a>
             <div class="py-4 p-1 photo">
-                <div> <img src="{% static 'assets/img/hero.jpg'%}" class="rounded" width="200"> </div>
+                <div> <img src="{{contact.photo.url}}" class="rounded" width="200"> </div>
                 <div class="mt-3 d-flex flex-row justify-content-center">
-                    <h5 style="font-size:30px;">Bakayoko <br> Ismael</h5> <span class="dots"><i class="fa fa-check"></i></span>
+                    <h5 style="font-size:30px;">{{contact.nom | title}} <br> {{contact.prenom | title}}</h5> <span class="dots"><i class="fa fa-check"></i></span>
                 </div>
-                <div class="mt-3"> <button class="btn btn-danger"><i class="far fa-trash-alt"></i> Del</button> <button class="btn btn-outline-secondary"><i class="fas fa-edit"></i> Edit</button> </div>
-                
+                <form action="" method="post"> {% csrf_token %} 
+
+                    <div class="mt-3"> <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i> Del</button> <a href="{% url 'edit' contact.id%}" class="btn btn-outline-secondary"><i class="fas fa-edit"></i> Edit</a> </div>
+                </form>
             </div>
             <div>
                 <ul class="list-unstyled list">
                     <li> <span class="font-weight-bold">Email</span>
-                        <div> <span class="mr-1">ismael@gmail.com</span> </div>
+                        <div> <span class="mr-1">{{contact.email | title}}</span> </div>
                     </li>
                     <li> <span class="font-weight-bold">Numero</span>
-                        <div> <span class="mr-1">45 068263628</span></div>
+                        <div> <span class="mr-1">{{contact.phone}}</span></div>
                     </li>
                     <li> <span class="font-weight-bold">Autre</span>
                         <div> <span class="mr-1">AUTRE</span> </div>
