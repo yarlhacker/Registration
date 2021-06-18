@@ -31,7 +31,7 @@ def is_email(email):
     try:
         validate_email(email)
         return True
-    except :
+    except:
         return False
 
 def inscription(request):
@@ -81,20 +81,24 @@ def logout_view(request):
 
 @login_required(login_url='index')
 def contact(request):
-    
+    find = True
     contacts = models.Contact.objects.filter(status=True, utilisateur=request.user).order_by('nom')
-    
+    search_contact = request.GET.get('search_name')
+    if search_contact:
+        contacts = models.Contact.objects.filter(nom__icontains=search_contact)
+        find = False
     return render(request, 'contact.html', locals())
 
 
 
 
-
 @login_required(login_url='index')
-def detail(request,id):
-    contact = get_object_or_404(models.Contact , id =id)
+def detail(request, id):
+    contact = models.Contact.objects.get(id=id) 
+    if request.method == 'POST':
+        contact.delete()
+        return redirect('contact')
     return render(request, 'detail.html',locals())
-
 
 
 

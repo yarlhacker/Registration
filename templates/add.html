@@ -13,8 +13,7 @@
 </head>
 <body>
     <div class="registration-form">
-        <form method="POST" action="#" enctype="multipart/form-data"> 
-            {% csrf_token %}
+        <form method="post" action="#"> {% csrf_token %}
         <a  href='{% url 'contact' %}' type="button" class="btn btn-outline-secondary"><i class="fas fa-chevron-left"></i>  back</a>
             <div  class="image-upload form-icon">
                 <label for="photo">
@@ -36,7 +35,7 @@
             </div>
             <div class="form-group" id="group-button">
                 <button type="submit" class="btn btn-outline-secondary create-account" >Add contact</button>
-                <button type="button" class="btn btn-outline-secondary create-account " id="button2"> Brouillons</button>
+                <button type="button" class="btn btn-outline-secondary create-account" onclick="store()" id="button2"> Brouillons</button>
             </div>
         </form>
         <div class="social-media">
@@ -45,5 +44,23 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
     <script src="{% static 'assets/js/script.js' %}"></script>
+
+    <script>
+        function store(){
+            
+            let formObj = {
+                nom:document.getElementById("username"),
+                prenom:document.getElementById("prenom"),
+                email:document.getElementById("email"),
+                phone:document.getElementById("phone"),
+                photo:document.getElementById("blah"),
+            }
+            let retrat = JSON.stringify(formObj)
+            localStorage.setItem("obj", retrat);
+            let objLinea = localStorage.getItem("obj");
+            let formObj = JSON.parse(objLinea);
+            alert(formObj.nom)
+        }
+    </script>
 </body>
 </html>
