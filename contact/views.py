@@ -6,7 +6,12 @@ from django.contrib.auth.models import User,UserManager
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+<<<<<<< HEAD
+from django.db.models import Q
+from .filter import search
+=======
 from django.views.decorators.csrf import csrf_exempt
+>>>>>>> 5e925b6d1556cd0c54bde489c7c734b01d16a8e5
 # from django.urls import reverse
 import json
 
@@ -172,6 +177,18 @@ def get_my_contact(request):
     return JsonResponse(datas, safe=False)
 
 
+<<<<<<< HEAD
+    return JsonResponse(datas, safe=False)
+
+
+
+def search_contact(request):
+    contacts = models.Contact.objects.filter(status=True, utilisateur=request.user).order_by('nom')
+    if request.method == "GET":
+        search_contact = request.GET.get('search_name')
+        contacts = models.Contact.objects.filter(nom=search_contact)
+    return render(request , "contact.html",locals())
+=======
 def copy_contact(id_contact, users):
     contact = models.Contact.objects.get(id=id_contact)
     for us in users:
@@ -204,3 +221,4 @@ def send_contact(request):
         "message": message
     }
     return JsonResponse(datas, safe=False)
+>>>>>>> 5e925b6d1556cd0c54bde489c7c734b01d16a8e5
